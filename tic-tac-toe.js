@@ -8,6 +8,24 @@ const Gameboard = (function () {
     return {gameboard};
 })();
 
+const displayBoard = (function () {
+    const board = document.querySelector('.gameboard');
+    let update = () => {
+        Gameboard.gameboard.forEach((row) => {
+            const boardRow = document.createElement('div');
+            row.forEach((space) => {
+                
+                const boardSpace = document.createElement('span');
+                boardSpace.innerText = String(space);
+                boardRow.appendChild(boardSpace);
+            })
+            board.appendChild(boardRow);
+        })
+
+    }
+    return {update};
+})();
+
 const Game = (function (player1, player2) {
     player1.setPlayerPiece("X");
     player2.setPlayerPiece("O");
@@ -17,6 +35,7 @@ const Game = (function (player1, player2) {
         placePiece(player1, 0, 2);
         placePiece(player1, 1, 0);
         console.log(Gameboard.gameboard);
+        displayBoard.update();
     }
     function whosTurn(){
         if (player1.isTheirTurn)
@@ -84,4 +103,6 @@ function createPlayer (name) {
             getPlayerPiece
     };
 }
+
+
 
