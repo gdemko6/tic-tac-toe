@@ -10,33 +10,42 @@ const Gameboard = (function () {
 
 const displayBoard = (function () {
     const board = document.querySelector('.gameboard');
-    let update = () => {
-        Gameboard.gameboard.forEach((row) => {
-            const boardRow = document.createElement('div');
-            row.forEach((space) => {
-                
-                const boardSpace = document.createElement('span');
-                boardSpace.innerText = String(space);
-                boardRow.appendChild(boardSpace);
-            })
-            board.appendChild(boardRow);
-        })
 
-    }
-    return {update};
+    let update = () => {
+        board.innerHTML = '';
+
+        Gameboard.gameboard.forEach((row, rowIndex) => {
+            const boardRow = document.createElement('div');
+            row.forEach((space, colIndex) => {
+                let boardSpace;
+                if (String(space) === "X" || String(space) === "O") {
+                    boardSpace = document.createElement('span');
+                    boardSpace.innerText = String(space);
+                } else {
+                    boardSpace = document.createElement('button');
+                    boardSpace.innerText = ""; // Button is initially empty
+                    boardSpace.onclick = () => {
+                        const currentPlayer = Game.whosTurn();
+                        if (!currentPlayer.hasWon && Gameboard.gameboard[rowIndex][colIndex] === "") {
+                            Game.placePiece(currentPlayer, rowIndex, colIndex);
+                            update(); // Update the board after placing a piece
+                        }
+                    };
+                }
+                boardRow.appendChild(boardSpace);
+            });
+            board.appendChild(boardRow);
+        });
+    };
+
+    return { update };
 })();
+
 
 const Game = (function (player1, player2) {
     player1.setPlayerPiece("X");
     player2.setPlayerPiece("O");
-    while (!player1.hasWon && !player2.hasWon){
-        placePiece(player1, 0, 0);
-        placePiece(player1, 0, 1);
-        placePiece(player1, 0, 2);
-        placePiece(player1, 1, 0);
-        console.log(Gameboard.gameboard);
-        displayBoard.update();
-    }
+    
     function whosTurn(){
         if (player1.isTheirTurn)
             return player1;
@@ -47,6 +56,8 @@ const Game = (function (player1, player2) {
     function placePiece(player, row, column){
         Gameboard.gameboard[row][column] = player.getPlayerPiece();
         checkWin(player);
+        displayBoard.update;
+        console.log(Gameboard.gameboard);
     }
     function checkWin(player) {
         const piece = player.getPlayerPiece();
@@ -83,7 +94,7 @@ const Game = (function (player1, player2) {
     
     
 
-    
+    return {player1, player2, placePiece, whosTurn};
 
 })(createPlayer("John"), createPlayer("Mark"));
 
@@ -106,3 +117,4 @@ function createPlayer (name) {
 
 
 
+displayBoard.update();
